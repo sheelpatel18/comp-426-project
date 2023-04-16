@@ -16,7 +16,8 @@ import {
 import { API } from '../Tools/api';
 import { User } from '../Tools/user';
 import { initializeApp } from 'firebase/app';
-import {setUser} from "../redux/store"
+import { setUser } from "../redux/store"
+import { useDispatch, useSelector } from 'react-redux';
 // import { initializeApp } from 'firebase-admin/app';
 
 const Overlay = styled(Box)`
@@ -46,6 +47,8 @@ const LoginCard = ({ onClose }) => {
     const [buttonLoading, setButtonLoading] = useState(false) // in case we need for some async operation.
     const confirmationRef = useRef(null);
     const recaptchaRef = useRef(null);
+    const userRaw = useSelector(state => state.user)
+    const dispatch = useDispatch()
 
     // useEffect(() => {
     //   const firebaseConfig = {
@@ -104,7 +107,15 @@ const LoginCard = ({ onClose }) => {
                 setUser(user.toJSON())
                 setStep(2)
             } else if (step === 2) { // submit name
-
+                const user = new User(userRaw)
+                await API.patch(`/users/${user.id}`, {
+                    name
+                }).then(updatedUser => {
+                    dispatch(
+                        setUser(updatedUser)
+                    )
+                }).catch(console.error)
+                setStep(-1) // no additional steps
             }
         } catch (err) {
             console.error(err);
@@ -112,6 +123,40 @@ const LoginCard = ({ onClose }) => {
             setButtonLoading(false);
         }
     };
+
+    const RenderBox = () => {
+        switch (step) {
+            case 0:
+                return (
+                    <TextField
+                        fullWidth
+                        label="Phone Number"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                )
+            case 1:
+                return (
+                    <TextField
+                        fullWidth
+                        label="Verification Code"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                    />
+                )
+            case 2:
+                return (
+                    <TextField
+                        fullWidth
+                        label="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                )
+            default:
+                return null
+        }
+    }
 
     return (ready && (
         <Overlay onClick={onClose}>
@@ -121,21 +166,7 @@ const LoginCard = ({ onClose }) => {
                         Login
                     </Typography>
                     <div id="recaptcha-container"></div>
-                    {step === 0 ? (
-                        <TextField
-                            fullWidth
-                            label="Phone Number"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                    ) : (
-                        <TextField
-                            fullWidth
-                            label="Verification Code"
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value)}
-                        />
-                    )}
+                    <RenderBox />
                     <Box mt={2}>
                         <LoadingButton
                             fullWidth
