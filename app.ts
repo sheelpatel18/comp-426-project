@@ -3,6 +3,8 @@ import http from 'http'
 import apiRouter from "./api/api"
 const app = express()
 
+app.use(express.urlencoded())
+
 const port = process.env.PORT || 3000
 
 app.route('/app')

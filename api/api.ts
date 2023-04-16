@@ -85,7 +85,7 @@ router.route("/user/:id")
 
 router.route("/whenAvailable")
     .get((req, res) => {
-
+        
     })
 
 

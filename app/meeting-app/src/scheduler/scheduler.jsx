@@ -8,7 +8,7 @@ export default function Scheduler(props) {
 
     const handleChange = newSchedule => {
         setSchedule({ schedule: newSchedule })
-      }
+    }
 
     return (
         <div>
