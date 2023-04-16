@@ -16,6 +16,7 @@ import {
 import { API } from '../Tools/api';
 import { User } from '../Tools/user';
 import { initializeApp } from 'firebase/app';
+import {setUser} from "../redux/store"
 // import { initializeApp } from 'firebase-admin/app';
 
 const Overlay = styled(Box)`
@@ -38,6 +39,7 @@ const StyledCard = styled(Card)`
 
 const LoginCard = ({ onClose }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [name, setName] = useState('')
     const [verificationCode, setVerificationCode] = useState('');
     const [step, setStep] = useState(0);
     const [ready, setReady] = useState(false) // in case we need for some async operation. 
@@ -83,25 +85,26 @@ const LoginCard = ({ onClose }) => {
     const handleNextClick = async () => {
         try {
             setButtonLoading(true);
-            if (step === 0) {
+            if (step === 0) { // submit phone
                 console.log("HERE")
                 const verify = new RecaptchaVerifier('recaptcha-container', {
                     'size': 'invisible'
                 }, getAuth())
+                await API.post("`/users", {
+                    phone: `+1${phoneNumber}`
+                }).catch(console.error)
                 const confirmation = await signInWithPhoneNumber(getAuth(), `+1${phoneNumber}`, verify)
-                console.log(confirmation)
-                // const c = await confirmation.confirm(verificationCode)
                 confirmationRef.current = confirmation;
                 setStep(1);
-            } else {
+            } else if (step === 1) { // submit otp
                 const userCred = await confirmationRef.current.confirm(verificationCode);
                 const id = userCred.user.uid
-                console.log(id)
-                // const userRaw = await API.get(`/users/${id}`)
-                // const user = new User(userRaw)
-                //   Placeholder for the Firebase authentication logic
-                console.log('Submitting phone number and verification code...');
-                //   onClose(); // Close the overlay after submitting
+                const userRaw = await API.get(`/users/${id}`)
+                const user = new User(userRaw)
+                setUser(user.toJSON())
+                setStep(2)
+            } else if (step === 2) { // submit name
+
             }
         } catch (err) {
             console.error(err);
