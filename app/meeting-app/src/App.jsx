@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Scheduler from './scheduler/scheduler';
+import LoginCard from './Login/LoginCard';
 function App() {
+
   return (
     <div className="App">
-      <Scheduler />
+      <LoginCard />
+      {/* <Scheduler /> */}
     </div>
   );
 }
