@@ -50,27 +50,6 @@ const LoginCard = ({ onClose }) => {
     const userRaw = useSelector(state => state.user)
     const dispatch = useDispatch()
 
-    // useEffect(() => {
-    //   const firebaseConfig = {
-    //     apiKey: "AIzaSyAny-oWiYX8Lj9LO4Qtnj-wfInL-We_O1M",
-    //     authDomain: "comp426-383520.firebaseapp.com",
-    //     projectId: "comp426-383520",
-    //     storageBucket: "comp426-383520.appspot.com",
-    //     messagingSenderId: "348482673610",
-    //     appId: "1:348482673610:web:b3c4dedf38228678e18d33"
-    //   };
-
-    //   const app = initializeApp(firebaseConfig);
-
-    // }, [])
-
-    // window.recaptchaVerifier = new RecaptchaVerifier('sign-in-button', {
-    //   'size': 'invisible',
-    //   'callback': (response) => {
-    //     // reCAPTCHA solved, allow signInWithPhoneNumber.
-    //     setReady(true);
-    //   }
-    // }, getAuth())
 
     useEffect(() => {
         const firebaseConfig = {
