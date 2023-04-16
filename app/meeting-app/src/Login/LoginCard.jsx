@@ -46,7 +46,6 @@ const LoginCard = ({ onClose }) => {
     const [ready, setReady] = useState(false) // in case we need for some async operation. 
     const [buttonLoading, setButtonLoading] = useState(false) // in case we need for some async operation.
     const confirmationRef = useRef(null);
-    const recaptchaRef = useRef(null);
     const userRaw = useSelector(state => state.user)
     const dispatch = useDispatch()
 
