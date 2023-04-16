@@ -13,6 +13,10 @@ app.route('/app')
 
 app.use('/api', apiRouter)
 
+app.all("/ping", (req, res) => {
+    res.status(200).send("PONG")
+})
+
 
 
 http.createServer(app).listen(port, () => {

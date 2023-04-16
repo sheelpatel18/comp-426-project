@@ -1,6 +1,12 @@
 import express, { Request, Response } from 'express'
-import firebaseAdmin from 'firebase-admin'
+import * as firebaseAdmin from 'firebase-admin'
+import { applicationDefault } from 'firebase-admin/app'
 const router = express.Router()
+
+const app = firebaseAdmin.initializeApp({
+    credential: applicationDefault()
+})
+console.log(app.name)
 
 router.route("/user")
     .post((req, res) => {
@@ -12,7 +18,7 @@ router.route("/user/:id")
         const {
             id
         } = req.params
-        const ref = firebaseAdmin.firestore().collection(id).doc();
+        const ref = firebaseAdmin.firestore().collection('users').doc(id);
         (async () => {
             const user = await ref.get()
             if (user.exists) {
