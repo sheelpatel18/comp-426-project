@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express'
 import * as firebaseAdmin from 'firebase-admin'
 import { applicationDefault } from 'firebase-admin/app'
+import ObjectID from 'bson-objectid'
+import { UserRecord } from 'firebase-admin/lib/auth/user-record'
 const router = express.Router()
 
 const app = firebaseAdmin.initializeApp({
@@ -15,19 +17,28 @@ router.route("/user")
         }: {
             phone: string
         } = req.body
-
-        const ref = firebaseAdmin.firestore().collection('users').doc(phone);
+        
         (async () => {
-            const user = await ref.get()
-            if (user.exists) {
+            const userRecord: UserRecord | null = await firebaseAdmin.auth().getUserByPhoneNumber(phone).catch(e => null)
+            if (userRecord) {
                 res.status(403).send("USER_EXISTS")
             } else {
+                const id = ObjectID().toHexString()
+                const ref = firebaseAdmin.firestore().collection('users').doc(id);
                 const newUser = await ref.set({
-                    phone
+                    phone,
+                    id
                 })
                 res.status(200).json(newUser)
             }
-        })()
+        })().catch(err => {
+            console.error(err)
+            res.status(500).json({
+                status: 500,
+                message: "Internal server error",
+                data: err?.message || ""
+            })
+        })
 
     })
 
