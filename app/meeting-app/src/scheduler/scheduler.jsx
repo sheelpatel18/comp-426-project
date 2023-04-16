@@ -48,7 +48,7 @@ export default function Scheduler(props) {
       }}>
         <button style={{ 
           border: 'none', 
-          borderRadius: '5px', 
+          borderRadius: '6px', 
           backgroundColor: '#007bff', 
           color: '#fff', 
           padding: '0.5rem 1rem', 
