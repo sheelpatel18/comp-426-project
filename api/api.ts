@@ -10,7 +10,25 @@ console.log(app.name)
 
 router.route("/user")
     .post((req, res) => {
-        // create user
+        const {
+            phone
+        }: {
+            phone: string
+        } = req.body
+
+        const ref = firebaseAdmin.firestore().collection('users').doc(phone);
+        (async () => {
+            const user = await ref.get()
+            if (user.exists) {
+                res.status(403).send("USER_EXISTS")
+            } else {
+                const newUser = await ref.set({
+                    phone
+                })
+                res.status(200).json(newUser)
+            }
+        })()
+
     })
 
 router.route("/user/:id")
