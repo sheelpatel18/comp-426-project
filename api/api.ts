@@ -85,7 +85,13 @@ router.route("/user/:id")
 
 router.route("/whenAvailable")
     .get((req, res) => {
-        
+        // represent each time slot as an object with count of user available at that time
+        var date_today = new Date();
+        // get user available date arrays
+        // for each user date array
+            // for each date increment counter
+
+        // return updated schedule
     })
 
 
