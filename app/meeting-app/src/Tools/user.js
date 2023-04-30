@@ -5,7 +5,8 @@ class User {
     phone
     availability 
 
-    constructor({id, name, phone, availability}) {
+    constructor(data) {
+        const {id, name, phone, availability} = data || {}
         this.id = id
         this.name = name
         this.phone = phone
