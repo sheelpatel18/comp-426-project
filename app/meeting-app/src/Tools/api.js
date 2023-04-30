@@ -4,16 +4,18 @@ import axios from 'axios'
 export class API {
     static host
     static port
+    static path
 
-    static setURL = (host, port) => {
+    static setURL = (host, port, path) => {
         this.url = host
         this.port = port
+        this.path = path
     }
 
     static getBaseURL = () => {
         return this.port 
-            ? `${this.url}:${this.port}`
-            : this.url
+            ? `${this.url}:${this.port}${this.path}`
+            : `${this.url}${this.path}`
     }
 
     static async get(path) {

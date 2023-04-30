@@ -1,7 +1,7 @@
 import React from 'react'
 import { createSlice, configureStore } from '@reduxjs/toolkit'
 
-const counterSlice = createSlice({
+const mainSlice = createSlice({
   name: 'main',
   initialState: {
     user: {
@@ -22,10 +22,10 @@ const counterSlice = createSlice({
   }
 })
 
-export const { setUser, setAvailabilityFromScheduler } = counterSlice.actions;
+export const { setUser, setAvailabilityFromScheduler } = mainSlice.actions;
 
 const store = configureStore({
-  reducer: counterSlice.reducer
+  reducer: mainSlice.reducer
 })
 
 export default store;

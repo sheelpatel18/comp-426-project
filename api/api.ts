@@ -19,7 +19,7 @@ router.route("/user")
             (async () => {
                 const userRecord: UserRecord | null = await firebaseAdmin.auth().getUserByPhoneNumber(phone).catch(e => null)
                 if (userRecord) {
-                    res.status(403).send("USER_EXISTS")
+                    res.status(409).send("USER_EXISTS")
                     return;
                 } else {
                     const newUser = await User.create({phone})

@@ -2,12 +2,14 @@ import express, { Request, Response } from 'express'
 import http from 'http'
 import apiRouter from "./api/api"
 import minimist from 'minimist'
+import cors from 'cors'
 const app = express()
 
 
 const args = minimist(process.argv.slice(2))
+const port = args?.port || 5001
 
-const port = args?.port || 3000
+app.use(cors())
 
 if (!args['api-only']) {
     console.log('run app route')

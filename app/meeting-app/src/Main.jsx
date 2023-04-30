@@ -7,10 +7,11 @@ import { Provider, useSelector } from 'react-redux';
 import { User } from './Tools/user';
 import { API } from './Tools/api';
 import store from './redux/store';
+import axios from 'axios';
 
 function Main() {
   const [loginComplete, setLoginComplete] = useState(false)
-  const userRaw = null//useSelector(state => state.user)
+  const userRaw = useSelector(state => state.user)
 
   useEffect(() => {
     const user = new User(userRaw)
@@ -19,10 +20,11 @@ function Main() {
       phone,
       name
     } = user
-    if (id && phone && name) {
-      setLoginComplete(true)
-    }
-    API.setURL('http://localhost', '3000')
+    if (id && phone && name) setLoginComplete(true)
+    API.setURL('http://localhost', '5001', '/api')
+
+    // axios.get('http://localhost:3000/api/oing')
+
   }, [userRaw])
 
   return (

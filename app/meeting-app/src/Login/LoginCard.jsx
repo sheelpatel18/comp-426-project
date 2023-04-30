@@ -41,13 +41,18 @@ const StyledCard = styled(Card)`
 const LoginCard = ({ onClose }) => {
     // const [phoneNumber, setPhoneNumber] = useState('');
     const phoneNumber = useRef("")
-    const [name, setName] = useState('')
-    const [verificationCode, setVerificationCode] = useState('');
+    const name = useRef('')
+    const verificationCode = useRef('')
+    // const [name, setName] = useState('')
+    // const [verificationCode, setVerificationCode] = useState('');
     const [step, setStep] = useState(0);
     const [ready, setReady] = useState(false) // in case we need for some async operation. 
     const [buttonLoading, setButtonLoading] = useState(false) // in case we need for some async operation.
     const confirmationRef = useRef(null);
     const userRaw = useSelector(state => state.user)
+    console.log(userRaw)
+    const state = useSelector(state => state)
+    console.log(state)
     const dispatch = useDispatch()
 
 
@@ -68,30 +73,30 @@ const LoginCard = ({ onClose }) => {
         try {
             setButtonLoading(true);
             if (step === 0) { // submit phone
-                console.log("HERE")
                 const verify = new RecaptchaVerifier('recaptcha-container', {
                     'size': 'invisible'
                 }, getAuth())
                 console.log(API.getBaseURL())
-                await API.post("`/users", {
+                await API.post("/user", {
                     phone: `+1${phoneNumber.current}`
                 }).catch(console.error)
                 const confirmation = await signInWithPhoneNumber(getAuth(), `+1${phoneNumber.current}`, verify)
                 confirmationRef.current = confirmation;
                 setStep(1);
             } else if (step === 1) { // submit otp
-                console.log("HERE2")
-                const userCred = await confirmationRef.current.confirm(verificationCode);
+                const userCred = await confirmationRef.current.confirm(verificationCode.current);
                 console.log(userCred)
                 const id = userCred.user.uid
-                const userRaw = await API.get(`/users/${id}`)
+                const userRaw = await API.get(`/user/${id}`)
                 const user = new User(userRaw)
-                setUser(user.toJSON())
+                dispatch(
+                    setUser(user.toJSON())
+                )
                 setStep(2)
             } else if (step === 2) { // submit name
                 const user = new User(userRaw)
-                await API.patch(`/users/${user.id}`, {
-                    name
+                await API.patch(`/user/${user.id}`, {
+                    name : name.current
                 }).then(updatedUser => {
                     dispatch(
                         setUser(updatedUser)
@@ -113,6 +118,7 @@ const LoginCard = ({ onClose }) => {
             case 0:
                 return (
                     <TextField
+                        disabled={buttonLoading}
                         fullWidth
                         label="Phone Number"
                         onChange={(e) => phoneNumber.current = e.target.value}
@@ -121,19 +127,19 @@ const LoginCard = ({ onClose }) => {
             case 1:
                 return (
                     <TextField
+                        disabled={buttonLoading}
                         fullWidth
                         label="Verification Code"
-                        value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value)}
+                        onChange={(e) => verificationCode.current = e.target.value}
                     />
                 )
             case 2:
                 return (
                     <TextField
+                        disabled={buttonLoading}
                         fullWidth
                         label="Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => name.current = e.target.value}
                     />
                 )
             default:
