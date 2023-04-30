@@ -1,19 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Basketball Team</title>
-    <style>
-        pre {
-            background-color: #f0f0f0;
-            padding: 10px;
-            border: 1px solid #cccccc;
-            overflow-x: auto;
-            white-space: pre-wrap;
-        }
-    </style>
-</head>
 <body>
     <h1>Fantasy Basketball Team</h1>
     <h2>Summary</h2>
