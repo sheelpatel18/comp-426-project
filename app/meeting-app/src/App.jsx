@@ -1,12 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Scheduler from './scheduler/scheduler';
+import store from './redux/store';
+import Main from "./Main"
+import { Provider } from 'react-redux';
+
 function App() {
   return (
-    <div className="App">
-      <Scheduler />
-    </div>
+    <Provider store={store}>
+      <Main />
+    </Provider>
   );
 }
 
