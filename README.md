@@ -10,6 +10,10 @@
     <hr>
     <h2>Future Implementations</h2>
     <hr>
+    <h2>API Documentation</h2>
+    <h4>Root Endpoint (/app)</h4>
+    <h6>GET</h6>
+    <p>Gets the root endpoint of the application. Serves WebApp to client.</p>
     <h3>Example Code:</h3>
     <pre>
 // This is an example of JavaScript code
