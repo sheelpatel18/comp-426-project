@@ -4,10 +4,12 @@ import ScheduleSelector from 'react-schedule-selector';
 import { User } from '../Tools/user';
 import { API } from '../Tools/api';
 import { setUser } from '../redux/store';
+import { Typography } from '@mui/material';
 
 export default function Scheduler(props) {
   const userRaw = useSelector(state => state.user)
   const [schedule, setSchedule] = useState(new User(userRaw).availability || []);
+  const [whenAvailable, setWhenAvailable] = useState('') 
   const dispatch  = useDispatch()
 
   const handleChange = (newSchedule) => {
@@ -16,7 +18,7 @@ export default function Scheduler(props) {
 
   const handleSubmit = async () => {
     const user = new User(userRaw)
-    const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => s?.toUTCString()) })
+    const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => s?.toUTCString() ?? []) })
     dispatch(
         setUser(updatedUser)
     )
@@ -26,9 +28,9 @@ export default function Scheduler(props) {
     setSchedule([]);
   };
 
-  const handleCreate = () => {
-    console.log("Create button clicked!");
-    // Add code to handle creating the meeting here
+  const handleCreate = async () => {
+    const whenAvailable = await API.get('/whenAvailable') || ""
+    setWhenAvailable(whenAvailable)
   };
 
   return (
@@ -98,8 +100,10 @@ export default function Scheduler(props) {
           transition: 'background-color 0.2s ease-in-out'
         }} onClick={handleCreate} 
         onMouseEnter={(e) => e.target.style.backgroundColor = '#0069d9'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}>Create</button>
+        onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}>Find Meeting Time</button>
       </div>
+      <div style={{marginTop: "50px"}} />
+      <Typography>{whenAvailable}</Typography>
     </div>
   );
 }

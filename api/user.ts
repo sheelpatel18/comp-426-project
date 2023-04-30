@@ -11,11 +11,11 @@ export class User {
     phone: string
     availability: Date[]
 
-    constructor({ id, name, phone, availability}: {id?: string, name?: string, phone?: string, availability?: Date[]}) {
+    constructor({ id, name, phone, availability}: {id?: string, name?: string, phone?: string, availability?: string[] | Date[]}) {
         this.id = id || ""
         this.name = name || ""
         this.phone = phone || ""
-        this.availability = availability || []
+        this.availability = availability ? availability.map(date => new Date(date)) : []
     }
 
     static async get(id: string): Promise<User | null> {
