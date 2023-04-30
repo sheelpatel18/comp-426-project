@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ScheduleSelector from 'react-schedule-selector';
+import { User } from '../Tools/user';
+import { API } from '../Tools/api';
+import { setUser } from '../redux/store';
 
 export default function Scheduler(props) {
-  const [schedule, setSchedule] = useState([]);
+  const userRaw = useSelector(state => state.user)
+  const [schedule, setSchedule] = useState(new User(userRaw).availability || []);
+  const dispatch  = useDispatch()
 
   const handleChange = (newSchedule) => {
     setSchedule(newSchedule);
   };
 
-  const handleSubmit = () => {
-    console.log(schedule);
+  const handleSubmit = async () => {
+    const user = new User(userRaw)
+    const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => s?.toUTCString()) })
+    dispatch(
+        setUser(updatedUser)
+    )
   };
 
   const handleReset = () => {
