@@ -22,7 +22,7 @@ function Main() {
     if (id && phone && name) {
       setLoginComplete(true)
     }
-    API.setURL('http://localhost', '5000')
+    API.setURL('http://localhost', '3000')
   }, [userRaw])
 
   return (

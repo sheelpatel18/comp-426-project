@@ -39,7 +39,8 @@ const StyledCard = styled(Card)`
 `;
 
 const LoginCard = ({ onClose }) => {
-    const [phoneNumber, setPhoneNumber] = useState('');
+    // const [phoneNumber, setPhoneNumber] = useState('');
+    const phoneNumber = useRef("")
     const [name, setName] = useState('')
     const [verificationCode, setVerificationCode] = useState('');
     const [step, setStep] = useState(0);
@@ -71,14 +72,17 @@ const LoginCard = ({ onClose }) => {
                 const verify = new RecaptchaVerifier('recaptcha-container', {
                     'size': 'invisible'
                 }, getAuth())
+                console.log(API.getBaseURL())
                 await API.post("`/users", {
-                    phone: `+1${phoneNumber}`
+                    phone: `+1${phoneNumber.current}`
                 }).catch(console.error)
-                const confirmation = await signInWithPhoneNumber(getAuth(), `+1${phoneNumber}`, verify)
+                const confirmation = await signInWithPhoneNumber(getAuth(), `+1${phoneNumber.current}`, verify)
                 confirmationRef.current = confirmation;
                 setStep(1);
             } else if (step === 1) { // submit otp
+                console.log("HERE2")
                 const userCred = await confirmationRef.current.confirm(verificationCode);
+                console.log(userCred)
                 const id = userCred.user.uid
                 const userRaw = await API.get(`/users/${id}`)
                 const user = new User(userRaw)
@@ -94,6 +98,8 @@ const LoginCard = ({ onClose }) => {
                     )
                 }).catch(console.error)
                 setStep(-1) // no additional steps
+            } else {
+                console.error('invalid step')
             }
         } catch (err) {
             console.error(err);
@@ -109,8 +115,7 @@ const LoginCard = ({ onClose }) => {
                     <TextField
                         fullWidth
                         label="Phone Number"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        onChange={(e) => phoneNumber.current = e.target.value}
                     />
                 )
             case 1:
