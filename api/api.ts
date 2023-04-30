@@ -179,8 +179,10 @@ router.route("/whenAvailable")
                 `The best time to meet is ${availableTime.toLocaleString()} with ${idsToNamesOrNumber.join(", ")}. Unfortunately, ${namesAndNumbersAvailable.join(", ")} are not available.` :
                 `The best time to meet is ${availableTime.toLocaleString()} with ${namesAndNumbersAvailable.join(", ")}.`
             )
+            return;
 
         })().catch(err => {
+            console.error(err)
             res.status(200).send(`Unfortunately, no one is available.`)
         })
     })
