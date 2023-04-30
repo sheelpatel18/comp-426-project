@@ -4,3 +4,4 @@ node_modules
 lib/**
 key.json
 .vscode
+**/*.icloud
