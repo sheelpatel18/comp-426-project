@@ -1,34 +1,30 @@
 import express, { Request, Response } from 'express'
 import * as firebaseAdmin from 'firebase-admin'
-import { applicationDefault } from 'firebase-admin/app'
-import ObjectID from 'bson-objectid'
+import {Cloud} from "./cloud"
+import { User } from './user'
 import { UserRecord } from 'firebase-admin/lib/auth/user-record'
 const router = express.Router()
 
-firebaseAdmin.initializeApp({
-    credential: applicationDefault() // requires GOOGLE_APPLICATION_CREDENTIALS env variable set to path of service account key file
-})
+Cloud.init()
+router.use(express.json())
 
 router.route("/user")
-    .post((req, res) => {
+    .post((req: Request, res: Response) => {
         const {
             phone
         }: {
             phone: string
-        } = req.body
+        } = req.body || {};
 
             (async () => {
                 const userRecord: UserRecord | null = await firebaseAdmin.auth().getUserByPhoneNumber(phone).catch(e => null)
                 if (userRecord) {
                     res.status(403).send("USER_EXISTS")
+                    return;
                 } else {
-                    const id = ObjectID().toHexString()
-                    const ref = firebaseAdmin.firestore().collection('users').doc(id);
-                    const newUser = await ref.set({
-                        phone,
-                        id
-                    })
+                    const newUser = await User.create({phone})
                     res.status(200).json(newUser)
+                    return;
                 }
             })().catch(err => {
                 console.error(err)
@@ -38,7 +34,6 @@ router.route("/user")
                     data: err?.message || ""
                 })
             })
-
     })
 
 router.route("/user/:id")
@@ -51,10 +46,12 @@ router.route("/user/:id")
             const user = await ref.get()
             if (user.exists) {
                 res.status(200).json(user.data())
+                return;
             } else {
                 res.status(404).json({
                     message: "User not found"
                 })
+                return;
             }
         })().catch(err => {
             console.error(err)
@@ -77,7 +74,7 @@ router.route("/user/:id")
             const user = await ref.get()
             if (user.exists) {
                 await ref.update(data)
-                res.status(200).json(user.data())
+                res.status(200).json((await ref.get()).data())
             } else {
                 res.status(404).json({
                     message: "User not found"

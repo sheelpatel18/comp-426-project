@@ -7,12 +7,11 @@ import { User } from './Tools/user';
 import { API } from './Tools/api';
 import store from './redux/store';
 import Main from "./Main"
+import { Provider } from 'react-redux';
 
 function App() {
   return (
-    // <Provider store={store}>
       <Main />
-    // </Provider>
   );
 }
 

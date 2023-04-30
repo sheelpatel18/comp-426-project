@@ -10,7 +10,7 @@ import store from './redux/store';
 
 function Main() {
   const [loginComplete, setLoginComplete] = useState(false)
-  const userRaw = useSelector(state => state.user)
+  const userRaw = null//useSelector(state => state.user)
 
   useEffect(() => {
     const user = new User(userRaw)
