@@ -13,14 +13,10 @@
     <h2>API Documentation</h2>
     <h4>Root Endpoint (/app)</h4>
     <h6>GET</h6>
-    <p>Gets the root endpoint of the application. Serves WebApp to client.</p>
+    <p>- Gets the root endpoint of the application. Serves WebApp to client.</p>
     <h3>Example Code:</h3>
     <pre>
-// This is an example of JavaScript code
-function calculatePoints(player) {
-    let points = player.score * 2 + player.assists * 1.5 + player.rebounds;
-    return points;
-}
+curl --location '/app'
     </pre>
 </body>
 </html>
