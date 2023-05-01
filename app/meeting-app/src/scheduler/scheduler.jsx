@@ -4,24 +4,43 @@ import ScheduleSelector from 'react-schedule-selector';
 import { User } from '../Tools/user';
 import { API } from '../Tools/api';
 import { setUser } from '../redux/store';
-import { Typography } from '@mui/material';
+import { Snackbar, Typography } from '@mui/material';
 
 export default function Scheduler(props) {
   const userRaw = useSelector(state => state.user)
-  const [schedule, setSchedule] = useState(new User(userRaw).availability || []);
+  const [schedule, setSchedule] = useState(new User(userRaw).availability?.map?.(s => {
+    try {
+      return new Date(s)
+    } catch (e) {
+      console.error(e)
+      return null;
+    }
+  })?.filter?.(s => s) || []);
   const [whenAvailable, setWhenAvailable] = useState('') 
+  const [open, setOpen] = useState(false)
   const dispatch  = useDispatch()
+
+  const parseSchedule = (schedule) => {
+    return schedule.m
+  }
+
+  console.log(schedule)
 
   const handleChange = (newSchedule) => {
     setSchedule(newSchedule);
   };
 
   const handleSubmit = async () => {
+    console.log("SUBMIT")
     const user = new User(userRaw)
-    const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => s?.toUTCString() ?? []) })
+    const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => (s?.toUTCString?.() || "") ?? []).filter(s => s) })
     dispatch(
         setUser(updatedUser)
     )
+    setOpen(true)
+    setTimeout(() => {
+      setOpen(false)
+    }, 3000);
   };
 
   const handleReset = () => {
@@ -31,6 +50,14 @@ export default function Scheduler(props) {
   const handleCreate = async () => {
     const whenAvailable = await API.get('/whenAvailable') || ""
     setWhenAvailable(whenAvailable)
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -104,6 +131,13 @@ export default function Scheduler(props) {
       </div>
       <div style={{marginTop: "50px"}} />
       <Typography>{whenAvailable}</Typography>
+      <Snackbar
+      open={open}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      message="Success"
+      // action={action}
+    />
     </div>
   );
 }

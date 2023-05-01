@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run build && node .",
     "test-api": "npm run build && node . --api-only",
-    "build": "npx tsc"
+    "build": "npm run build-app && npx tsc",
+    "build-app": "cd app/meeting-app && npm run build"
   },
   "keywords": [],
   "author": "",

@@ -18,6 +18,8 @@ const Header = () => {
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
+    setName(userData?.name || "")
+    setPhone(userData?.phone || "")
     setAnchorEl(event.currentTarget);
   };
 
@@ -56,6 +58,11 @@ const Header = () => {
     }
   };
 
+  const handleLogout = () => {
+    // Reload the page
+    window.location.reload();
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -63,6 +70,9 @@ const Header = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Welcome, {userData?.name || ''}!
           </Typography>
+          <Button color="inherit" onClick={handleLogout}>
+            Logout
+          </Button>
           <IconButton edge="end" color="inherit" onClick={handleClick}>
             <AccountCircle />
           </IconButton>

@@ -2,7 +2,7 @@ class User {
     id
     name
     phone
-    availability 
+    availability
 
     constructor(data) {
         const {id, name, phone, availability} = data || {}
