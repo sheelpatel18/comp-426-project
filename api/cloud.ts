@@ -38,17 +38,19 @@ class _Database {
         }
     }
 
-    static getCollection(collection: string) : Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            Cloud.app.firestore().collection(collection).get().then((snapshot) => {
-                const data: any[] = []
-                snapshot.forEach((doc) => {
-                    data.push(doc.data())
-                })
-                resolve(data)
-            }).catch(reject)
-        })
-    }
+    static async getCollection(collection: string): Promise<any[]> {
+        try {
+          const snapshot = await Cloud.app.firestore().collection(collection).get();
+          const data: any[] = [];
+          snapshot.forEach((doc) => {
+            data.push(doc.data());
+          });
+          return data;
+        } catch (error) {
+            console.error(error)
+            return []
+        }
+      }
 
     static async edit (collection: string, id: string, data: any) : Promise<void> {
         const ref = await Cloud.app.firestore().collection(collection).doc(id).get()

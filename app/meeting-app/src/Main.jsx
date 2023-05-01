@@ -5,6 +5,7 @@ import LoginCard from './Login/LoginCard';
 import { useSelector } from 'react-redux';
 import { User } from './Tools/user';
 import { API } from './Tools/api';
+import Bar from "./HeaderBar/Bar"
 
 function Main() {
   const [loginComplete, setLoginComplete] = useState(false)
@@ -27,7 +28,13 @@ function Main() {
   return (
     <div className="App">
       {
-        loginComplete ? <Scheduler /> : <LoginCard />
+        loginComplete ? 
+        (
+        <>
+          <Bar />
+          <Scheduler/>       
+        </>
+        ): <LoginCard />
       }
     </div>
   );
