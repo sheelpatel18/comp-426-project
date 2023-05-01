@@ -20,10 +20,6 @@ export default function Scheduler(props) {
   const [open, setOpen] = useState(false)
   const dispatch  = useDispatch()
 
-  const parseSchedule = (schedule) => {
-    return schedule.m
-  }
-
   console.log(schedule)
 
   const handleChange = (newSchedule) => {
