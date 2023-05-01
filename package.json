@@ -5,7 +5,7 @@
   "main": "./lib/app.js",
   "scripts": {
     "test": "npm run build && node .",
-    "test-api": "npm run build && node . --api-only",
+    "test-api": "npx tsc && node . --api-only",
     "build": "npm run build-app && npx tsc",
     "build-app": "cd app/meeting-app && npm run build"
   },

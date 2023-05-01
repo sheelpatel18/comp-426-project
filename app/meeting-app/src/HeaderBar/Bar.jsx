@@ -1,6 +1,6 @@
 // Header.js
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Popover, TextField, Button } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Popover, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { User } from '../Tools/user';
@@ -15,6 +15,8 @@ const Header = () => {
   const [name, setName] = useState(userData?.name || "")
   const [phone, setPhone] = useState(userData?.phone || "")
   const [loading, setLoading] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteButtonLoading, setDeleteButtonLoading] = useState(false)
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
@@ -63,6 +65,27 @@ const Header = () => {
     window.location.reload();
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+        setDeleteButtonLoading(true)
+        await API.delete(`/user/${userData.id}`)
+        window.location.reload();
+    } catch (err) {
+        console.error(err)
+    } finally {
+        setDeleteButtonLoading(false)
+    }
+  }
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteDialogConfirm = async () => {
+    await handleDeleteAccount();
+    handleDeleteDialogClose();
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -70,6 +93,9 @@ const Header = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Welcome, {userData?.name || ''}!
           </Typography>
+          <Button color="inherit" onClick={() => setDeleteDialogOpen(true)}>
+            Delete Account
+          </Button>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
@@ -99,6 +125,27 @@ const Header = () => {
           </LoadingButton>
         </div>
       </Popover>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Account"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete your account? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteDialogClose} color="primary">
+            Cancel
+          </Button>
+          <LoadingButton loading={deleteButtonLoading} onClick={handleDeleteDialogConfirm} color="secondary" autoFocus>
+            Delete
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

@@ -6,10 +6,15 @@ import { useSelector } from 'react-redux';
 import { User } from './Tools/user';
 import { API } from './Tools/api';
 import Bar from "./HeaderBar/Bar"
+import minimist from 'minimist';
 
 function Main() {
   const [loginComplete, setLoginComplete] = useState(false)
   const userRaw = useSelector(state => state.user)
+
+  // const args = minimist(process.argv.slice(2))
+
+  // const port = args?.port || 5001
 
   useEffect(() => {
     const user = new User(userRaw)

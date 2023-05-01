@@ -94,7 +94,7 @@ router.route("/user/:id")
         const {
             id
         } = req.params
-        const ref = firebaseAdmin.firestore().collection(id).doc();
+        const ref = firebaseAdmin.firestore().collection('users').doc(id);
 
         (async () => {
             const user = await ref.get()
