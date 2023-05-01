@@ -122,6 +122,35 @@ router.route("/user/:id")
         })
     })
 
+const determineMessage = (dateAvailable: Date, peopleAvailable: string[], peopleNotAvailable: string[]) => {
+    const dateMessage = `The best time to meet is ${dateAvailable.toLocaleDateString()}`
+    const peopleAvailableMessage = (() => {
+        switch (peopleAvailable.length) {
+            case 0:
+                return ""
+            case 1:
+                return `with ${peopleAvailable[0]}.`
+            case 2:
+                return `with ${peopleAvailable[0]} & ${peopleAvailable[1]}.`
+            default:
+                return `with ${peopleAvailable.slice(0, -1).join(", ")} & ${peopleAvailable.slice(-1)}.`
+        }
+    })()
+    const peopleNotAvailableMessage = (() => {
+        switch (peopleNotAvailable.length) {
+            case 0:
+                return ""
+            case 1:
+                return `Unfortunately, ${peopleNotAvailable[0]} is unavailable.`
+            case 2:
+                return `Unfortunately, ${peopleNotAvailable[0]} & ${peopleNotAvailable[1]} are unavailable.`
+            default:
+                return `Unfortunately, ${peopleNotAvailable.slice(0, -1).join(", ")} & ${peopleNotAvailable.slice(-1)} are unavailable.`
+        }
+    })()
+    return `${dateMessage} ${peopleAvailableMessage} ${peopleNotAvailableMessage}`
+}
+
 router.route("/whenAvailable")
     .get((req, res) => {
         (async () => {
@@ -175,10 +204,7 @@ router.route("/whenAvailable")
 
             const namesAndNumbersAvailable = users.filter(u => !idsNotAvailable.includes(u.id)).map(user => user?.name || user?.phone)
 
-            res.status(200).send(idsNotAvailable.length ?
-                `The best time to meet is ${availableTime.toLocaleString()} with ${idsToNamesOrNumber.join(", ")}. Unfortunately, ${namesAndNumbersAvailable.join(", ")} are not available.` :
-                `The best time to meet is ${availableTime.toLocaleString()} with ${namesAndNumbersAvailable.join(", ")}.`
-            )
+            res.status(200).send(determineMessage(availableTime, namesAndNumbersAvailable, idsToNamesOrNumber))
             return;
 
         })().catch(err => {
