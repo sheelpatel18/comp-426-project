@@ -49,9 +49,7 @@ const LoginCard = ({ onClose }) => {
     const [buttonLoading, setButtonLoading] = useState(false) // in case we need for some async operation.
     const confirmationRef = useRef(null);
     const userRaw = useSelector(state => state.user)
-    console.log(userRaw)
     const state = useSelector(state => state)
-    console.log(state)
     const dispatch = useDispatch()
 
 
@@ -75,7 +73,6 @@ const LoginCard = ({ onClose }) => {
                 const verify = new RecaptchaVerifier('recaptcha-container', {
                     'size': 'invisible'
                 }, getAuth())
-                console.log(API.getBaseURL())
                 await API.post("/user", {
                     phone: `+1${phoneNumber.current}`
                 }).catch(console.error)
@@ -84,7 +81,6 @@ const LoginCard = ({ onClose }) => {
                 setStep(1);
             } else if (step === 1) { // submit otp
                 const userCred = await confirmationRef.current.confirm(verificationCode.current);
-                console.log(userCred)
                 const id = userCred.user.uid
                 const userRaw = await API.get(`/user/${id}`)
                 const user = new User(userRaw)

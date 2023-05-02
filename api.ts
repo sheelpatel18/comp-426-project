@@ -11,14 +11,9 @@ const port = args?.port || 5001
 
 app.use(cors())
 
-console.log(path.join(__dirname, 'build'))
-
 if (!args['api-only']) {
-    console.log('run app route')
-
     const dirPath = path.join(__dirname) 
     const newPath = dirPath.split('/').slice(0,-1).join('/').concat('/app/meeting-app/build')
-    console.log("PATH => ", newPath)
     const appRouter = express.Router()
     app.use(express.static(newPath));
     appRouter.get('*', (req, res) => {
@@ -27,20 +22,6 @@ if (!args['api-only']) {
 
     app.use('/app', appRouter)
 
-    // const getFilePathToBuild = (() => {
-    //     let path = __dirname.split('/').slice(0, -1).join('/')
-    //     return path + '/app/meeting-app/build'
-    // })()
-
-    // const reactAppRouter = express.Router()
-    // reactAppRouter.use(express.static(getFilePathToBuild))
-    //     .route('/')
-    //         .get((_req: Request, res: Response) => {
-    //             console.log(`${getFilePathToBuild}/index.html`)
-    //             res.sendFile(`${getFilePathToBuild}/index.html`)
-    //         })
-        
-    // app.use('/app', reactAppRouter)
 }
 
 app.use('/api', apiRouter)

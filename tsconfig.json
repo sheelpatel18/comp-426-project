@@ -9,5 +9,5 @@
       "resolveJsonModule": true,
       "sourceMap": true
     },
-    "include": ["app.ts"]
+    "include": ["api.ts"]
   }

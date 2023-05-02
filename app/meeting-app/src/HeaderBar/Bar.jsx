@@ -63,7 +63,6 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-        console.log(userData.id)
         setLogoutButtonLoading(true)
         await API.post(`/user/logout/${userData.id}`)
         // Reload the page

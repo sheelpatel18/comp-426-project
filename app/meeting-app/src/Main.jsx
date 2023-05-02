@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 import Scheduler from './scheduler/scheduler';
 import LoginCard from './Login/LoginCard';
 import { useSelector } from 'react-redux';
