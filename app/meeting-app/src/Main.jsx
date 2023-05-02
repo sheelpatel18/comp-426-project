@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { User } from './Tools/user';
 import { API } from './Tools/api';
 import Bar from "./HeaderBar/Bar"
-import minimist from 'minimist';
 
 function Main() {
   const [loginComplete, setLoginComplete] = useState(false)

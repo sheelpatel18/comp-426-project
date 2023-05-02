@@ -5,6 +5,7 @@ import { User } from '../Tools/user';
 import { API } from '../Tools/api';
 import { setUser } from '../redux/store';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Typography } from '@mui/material';
+import LoadingOverlay from '../Tools/LoadingOverlay';
 
 export default function Scheduler(props) {
   const userRaw = useSelector(state => state.user)
@@ -19,6 +20,7 @@ export default function Scheduler(props) {
   const [whenAvailable, setWhenAvailable] = useState('')
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false)
   const dispatch = useDispatch()
 
   console.log(schedule)
@@ -28,25 +30,40 @@ export default function Scheduler(props) {
   };
 
   const handleSubmit = async () => {
-    console.log("SUBMIT")
-    const user = new User(userRaw)
-    const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => (s?.toUTCString?.() || "") ?? []).filter(s => s) })
-    dispatch(
-      setUser(updatedUser)
-    )
-    setOpen(true)
-    setTimeout(() => {
-      setOpen(false)
-    }, 3000);
+    try {
+      setShowLoadingOverlay(true)
+      const user = new User(userRaw)
+      const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => (s?.toUTCString?.() || "") ?? []).filter(s => s) })
+      dispatch(
+        setUser(updatedUser)
+      )
+      setOpen(true)
+      setTimeout(() => {
+        setOpen(false)
+      }, 3000);
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setShowLoadingOverlay(false)
+    }
   };
 
   const handleReset = () => {
     setSchedule([]);
   };
 
-  const handleCreate = async () => {
-    const whenAvailable = await API.get('/whenAvailable') || ""
-    setWhenAvailable(whenAvailable)
+  const handleWhenAvailabe = async () => {
+    try {
+      setShowLoadingOverlay(true)
+      const whenAvailable = await API.get(`/whenAvailable/${userRaw?.id || ''}`) || ""
+      setWhenAvailable(whenAvailable)
+    } catch (err) {
+      console.error(err)
+      new Promise(resolve => setTimeout(resolve, 5000))
+    } finally {
+      setShowLoadingOverlay(false)
+    }
+    
   };
 
   const handleClose = (event, reason) => {
@@ -72,6 +89,7 @@ export default function Scheduler(props) {
       borderRadius: '5px',
       padding: '1rem'
     }}>
+      <LoadingOverlay open={showLoadingOverlay} />
       <h1 style={{
         marginBottom: '1rem',
         fontSize: '2rem',
@@ -131,7 +149,7 @@ export default function Scheduler(props) {
           fontWeight: 'bold',
           cursor: 'pointer',
           transition: 'background-color 0.2s ease-in-out'
-        }} onClick={handleCreate}
+        }} onClick={handleWhenAvailabe}
           onMouseEnter={(e) => e.target.style.backgroundColor = '#0069d9'}
           onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}>Find Meeting Time</button>
       </div>
