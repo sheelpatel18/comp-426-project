@@ -11,7 +11,7 @@ function Main() {
   const [loginComplete, setLoginComplete] = useState(false)
   const userRaw = useSelector(state => state.user)
 
-  const port = process.env.REACT_APP_SERVER_PORT || 5001
+  const port = process.env.REACT_APP_SERVER_PORT || 5000
 
   useEffect(() => {
     const user = new User(userRaw)
