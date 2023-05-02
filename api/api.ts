@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import * as firebaseAdmin from 'firebase-admin'
-import { Cloud } from "./cloud"
+import { Cloud, InteractionType } from "./cloud"
 import { User } from './user'
 import { UserRecord } from 'firebase-admin/lib/auth/user-record'
 const router = express.Router()
@@ -35,6 +35,14 @@ router.route("/user")
             })
         })
     })
+    
+router.route("/user/logout/:id")
+    .post((req: Request, res: Response) => {
+        const {
+            id
+        } = req.params
+        Cloud.logInteraction(InteractionType.LOGOUT, id).then(() => { res.status(200).send() })
+    })
 
 router.route("/user/:id")
     .get((req, res) => {
@@ -46,12 +54,11 @@ router.route("/user/:id")
             const user = await ref.get()
             if (user.exists) {
                 res.status(200).json(user.data())
-                return;
+                Cloud.logInteraction(InteractionType.LOGIN, id)
             } else {
                 res.status(404).json({
                     message: "User not found"
                 })
-                return;
             }
         })().catch(err => {
             console.error(err)
@@ -67,6 +74,7 @@ router.route("/user/:id")
             id
         } = req.params
         const data = req.body
+        const { availability } = data || {}
 
         const ref = firebaseAdmin.firestore().collection('users').doc(id);
 
@@ -75,6 +83,7 @@ router.route("/user/:id")
             if (user.exists) {
                 await ref.update(data)
                 res.status(200).json((await ref.get()).data())
+                if (availability) await Cloud.logInteraction(InteractionType.SUBMIT_SCHEDULE, id)
             } else {
                 res.status(404).json({
                     message: "User not found"
@@ -101,10 +110,12 @@ router.route("/user/:id")
             if (user.exists) {
                 const [
                     dbDelete, // write result
-                    authDelete // void
+                    authDelete, // void
+                    deleteAcctLog
                 ] = await Promise.all([
                     ref.delete(),
-                    firebaseAdmin.auth().deleteUser(id)
+                    firebaseAdmin.auth().deleteUser(id),
+                    Cloud.logInteraction(InteractionType.DELETE_ACCOUNT, id)
                 ])
                 res.status(200).json(user.data())
             } else {
@@ -121,6 +132,8 @@ router.route("/user/:id")
             })
         })
     })
+
+
 
 const determineMessage = (dateAvailable: Date, peopleAvailable: string[], peopleNotAvailable: string[]) => {
     const dateMessage = `The best time to meet is ${dateAvailable.toLocaleDateString()}`
@@ -151,10 +164,15 @@ const determineMessage = (dateAvailable: Date, peopleAvailable: string[], people
     return `${dateMessage} ${peopleAvailableMessage} ${peopleNotAvailableMessage}`
 }
 
-router.route("/whenAvailable")
+router.route("/whenAvailable/:id")
     .get((req, res) => {
+        const {
+            id
+        } = req.params;
         (async () => {
             let users = (await Cloud.Database.getCollection("users")).map(u => new User(u))
+
+            Cloud.logInteraction(InteractionType.REQUEST_MEETING_TIME)
 
             const findHighestAvailability = (people: User[]): [Date, string[]] => {
                 const availabilityMap: Map<number, Set<string>> = new Map();
@@ -205,6 +223,7 @@ router.route("/whenAvailable")
             const namesAndNumbersAvailable = users.filter(u => !idsNotAvailable.includes(u.id)).map(user => user?.name || user?.phone)
 
             res.status(200).send(determineMessage(availableTime, namesAndNumbersAvailable, idsToNamesOrNumber))
+            await Cloud.logInteraction(InteractionType.REQUEST_MEETING_TIME, id)
             return;
 
         })().catch(err => {

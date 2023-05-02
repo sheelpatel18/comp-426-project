@@ -17,6 +17,7 @@ const Header = () => {
   const [loading, setLoading] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteButtonLoading, setDeleteButtonLoading] = useState(false)
+  const [logoutButtonLoading, setLogoutButtonLoading] = useState(false)
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
@@ -60,9 +61,19 @@ const Header = () => {
     }
   };
 
-  const handleLogout = () => {
-    // Reload the page
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+        console.log(userData.id)
+        setLogoutButtonLoading(true)
+        await API.post(`/user/logout/${userData.id}`)
+        // Reload the page
+        window.location.reload();
+    } catch (err) {
+        console.error(err)
+        await new Promise(r => setTimeout(r, 1000))
+    } finally {
+        setLogoutButtonLoading(false)
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -96,9 +107,9 @@ const Header = () => {
           <Button color="inherit" onClick={() => setDeleteDialogOpen(true)}>
             Delete Account
           </Button>
-          <Button color="inherit" onClick={handleLogout}>
+          <LoadingButton loading={logoutButtonLoading} color="inherit" onClick={handleLogout}>
             Logout
-          </Button>
+          </LoadingButton>
           <IconButton edge="end" color="inherit" onClick={handleClick}>
             <AccountCircle />
           </IconButton>

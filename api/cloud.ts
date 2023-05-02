@@ -68,6 +68,24 @@ class _Database {
 
 }
 
+export enum InteractionType {
+    LOGIN = "LOGIN",
+    LOGOUT = "LOGOUT",
+    DELETE_ACCOUNT = "DELETE_ACCOUNT",
+    SUBMIT_SCHEDULE = "SUBMIT_SCHEDULE",
+    REQUEST_MEETING_TIME = "REQUEST_MEETING_TIME",
+}
+
+type InteractionData =  {
+    "interactions": Interaction[]
+}
+
+type Interaction = {
+    userID?: string | null,
+    interaction: string,
+    timestamp: number
+}
+
 export class Cloud {
     static app: firebaseAdmin.app.App
     static Auth = _Auth
@@ -80,6 +98,16 @@ export class Cloud {
                 credential: firebaseAdmin.credential.cert(key as any),
             })
         }   
+    }
+
+    static async logInteraction(interaction: InteractionType, userID?: string) {
+        let docRef = Cloud.app.firestore().collection('users').doc('interactions')
+        let interactionData: InteractionData = (await docRef.get()).data() as InteractionData
+        let existingInteractionData: Interaction[] = interactionData?.interactions || []
+        let newData = { userID : userID || null, interaction: interaction.toString(), timestamp: Date.now() }
+        existingInteractionData = [...existingInteractionData, newData]
+        await docRef.set({ interactions: existingInteractionData })
+        return;
     }
 
 }
