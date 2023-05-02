@@ -23,8 +23,6 @@ export default function Scheduler(props) {
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(false)
   const dispatch = useDispatch()
 
-  console.log(schedule)
-
   const handleChange = (newSchedule) => {
     setSchedule(newSchedule);
   };

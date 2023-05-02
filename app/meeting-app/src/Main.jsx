@@ -11,9 +11,7 @@ function Main() {
   const [loginComplete, setLoginComplete] = useState(false)
   const userRaw = useSelector(state => state.user)
 
-  // const args = minimist(process.argv.slice(2))
-
-  // const port = args?.port || 5001
+  const port = process.env.REACT_APP_SERVER_PORT || 5001
 
   useEffect(() => {
     const user = new User(userRaw)
@@ -23,11 +21,11 @@ function Main() {
       name
     } = user
     if (id && phone && name) setLoginComplete(true)
-    API.setURL('http://localhost', '5001', '/api')
+    API.setURL('http://localhost', port, '/api')
 
     // axios.get('http://localhost:3000/api/oing')
 
-  }, [userRaw])
+  }, [userRaw, port])
 
   return (
     <div className="App">
