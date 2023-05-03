@@ -35,13 +35,13 @@ app.get('/docs', (req, res) => {
     res.sendFile(__dirname + '/docs.html')
 })
 
-app.listen(5001, () => {
-    console.log(`Server is listening on port ${5001}`);
-  });
+// app.listen(5001, () => {
+//     console.log(`Server is listening on port ${5001}`);
+//   });
   
 
-// http.createServer(app).listen(port, () => {
-//     console.log(`Server is running on port ${port}`)
-// })
+http.createServer(app).listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+})
 
 export default app
