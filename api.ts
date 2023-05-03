@@ -43,3 +43,5 @@ app.listen(5001, () => {
 // http.createServer(app).listen(port, () => {
 //     console.log(`Server is running on port ${port}`)
 // })
+
+export default app
