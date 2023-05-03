@@ -16,7 +16,7 @@ if (!args['api-only']) {
     const newPath = dirPath.split('/').slice(0,-1).join('/').concat('/app/meeting-app/build')
     const appRouter = express.Router()
     app.use(express.static(newPath));
-    appRouter.get('*', (req, res) => {
+    appRouter.get('*', (req: Request, res: Response) => {
         res.sendFile(newPath.concat('/index.html'));
       });
 
@@ -26,11 +26,11 @@ if (!args['api-only']) {
 
 app.use('/api', apiRouter)
 
-app.all("/ping", (req, res) => {
+app.all("/ping", (req: Request, res: Response) => {
     res.status(200).send("PONG")
 })
 
-app.get('/docs', (req, res) => {
+app.get('/docs', (req: Request, res: Response) => {
     // html file is ./docs.html
     res.sendFile(__dirname + '/docs.html')
 })

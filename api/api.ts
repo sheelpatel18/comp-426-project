@@ -45,7 +45,7 @@ router.route("/user/logout/:id")
     })
 
 router.route("/user/:id")
-    .get((req, res) => {
+    .get((req: Request, res: Response) => {
         const {
             id
         } = req.params
@@ -69,7 +69,7 @@ router.route("/user/:id")
             })
         })
     })
-    .patch((req, res) => {
+    .patch((req: Request, res: Response) => {
         const {
             id
         } = req.params
@@ -99,7 +99,7 @@ router.route("/user/:id")
         })
 
     })
-    .delete((req, res) => {
+    .delete((req: Request, res: Response) => {
         const {
             id
         } = req.params
