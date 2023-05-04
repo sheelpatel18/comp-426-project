@@ -87,11 +87,25 @@ router.route("/whenAvailable")
     .get((req, res) => {
         // represent each time slot as an object with count of user available at that time
         var date_today = new Date();
+        var schedule = new Array();
+        for (let day = 0; day < 7; day++) {
+            for (let time =  10; time < 21; time++)
+            var dateCur = new Date(date_today.getFullYear(), date_today.getMonth(), date_today.getDate() + day, time)
+            schedule.push({
+                "date": dateCur,
+                "available": 0
+            })
+        }
+
         // get user available date arrays
+        
         // for each user date array
             // for each date increment counter
 
         // return updated schedule
+    })
+    .post((req, res) => {
+
     })
 
 
