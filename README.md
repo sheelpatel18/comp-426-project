@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-    <h1>Fantasy Basketball Team</h1>
+    <h1>Scheduler App</h1>
     <h2>Summary</h2>
+    We aimed to create an app that allows users to sign in via phone number, input times of the week that they are free, and 
     <hr>
     <h2>Set Up</h2>
     <hr>
     <h2>Team Roles</h2>
+    Sheel Patel: Back-end lead/Plan manager
+    Vidyuth Jagadeesan: Front-end lead/Database manager
+    Nashith Agarwal: Project manager/Documentatiom manager
+    Azaria Prescod: Documentation manager/Designer
+    Samuel Osei: Release manager/Design lead
     <hr>
     <h2>Future Implementations</h2>
     <hr>
