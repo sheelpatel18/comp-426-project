@@ -8,11 +8,11 @@
     <h2>Set Up</h2>
     <hr>
     <h2>Team Roles</h2>
-    Sheel Patel: Back-end lead/Plan manager
-    Vidyuth Jagadeesan: Front-end lead/Database manager
-    Nashith Agarwal: Project manager/Documentatiom manager
-    Azaria Prescod: Documentation manager/Designer
-    Samuel Osei: Release manager/Design lead
+    <p>Sheel Patel: Back-end lead/Plan manager</p>
+    <p>Vidyuth Jagadeesan: Front-end lead/Database manager</p>
+    <p>Nashith Agarwal: Project manager/Documentatiom manager</p>
+    <p>Azaria Prescod: Documentation manager/Designer</p>
+    <p>Samuel Osei: Release manager/Design lead</p>
     <hr>
     <h2>Future Implementations</h2>
     <hr>
