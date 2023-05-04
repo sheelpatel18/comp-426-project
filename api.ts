@@ -7,7 +7,7 @@ import path from 'path'
 const app = express()
 
 const args = minimist(process.argv.slice(2))
-const port = args?.port || 5001
+const port = args?.port || 5000
 
 app.use(cors())
 
