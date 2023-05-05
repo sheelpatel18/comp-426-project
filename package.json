@@ -10,7 +10,8 @@
     "test-app": "cd app/meeting-app && npm run test",
     "build": "npm run build-app && npm run build-server",
     "build-app": "cd app/meeting-app && npm i && npm run build",
-    "build-server": "npm i && npx tsc"
+    "build-server": "npm i && npx tsc",
+    "install": "cd app/meeting-app && npm i"
   },
   "keywords": ["scheduler", "availability", "meeting", "calendar"],
   "author": "",
