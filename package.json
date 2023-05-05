@@ -7,9 +7,10 @@
     "test": "npm run build && jest && cd app/meeting-app && npm test",
     "start": "npm run build && node .",
     "test-api": "npx tsc && node . --api-only",
-    "build": "npm run build-app && npx tsc",
-    "build-app": "cd app/meeting-app && npm run build",
-    "test-app": "cd app/meeting-app && npm run test"
+    "test-app": "cd app/meeting-app && npm run test",
+    "build": "npm run build-app && npm run build-server",
+    "build-app": "cd app/meeting-app && npm i && npm run build",
+    "build-server": "npm i && npx tsc"
   },
   "keywords": [],
   "author": "",

@@ -23,7 +23,6 @@ if (!args['api-only']) {
       });
 
     app.use('/app', appRouter)
-
 }
 
 app.use('/api', apiRouter)
@@ -34,7 +33,10 @@ app.all("/ping", (req: Request, res: Response) => {
 
 app.get('/docs', (req: Request, res: Response) => {
     // html file is ./docs.html
-    res.sendFile(__dirname + '/docs.html')
+    const dirPath = path.join(__dirname) 
+    const newPath = dirPath.split('/').slice(0,-1).join('/').concat('/README.md')
+    res.header("Content-Type",'text/html');
+    res.sendFile(newPath)
 })
 
 // app.listen(5001, () => {
