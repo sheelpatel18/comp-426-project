@@ -4,10 +4,12 @@ import apiRouter from "./api/api"
 import minimist from 'minimist'
 import cors from 'cors'
 import path from 'path'
+import request from 'supertest'
+
 const app = express()
 
 const args = minimist(process.argv.slice(2))
-const port = args?.port || 5000
+const port = args?.port || 5001
 
 app.use(cors())
 
@@ -38,10 +40,12 @@ app.get('/docs', (req: Request, res: Response) => {
 // app.listen(5001, () => {
 //     console.log(`Server is listening on port ${5001}`);
 //   });
-  
 
-http.createServer(app).listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+
+if (require.main === module) {
+  http.createServer(app).listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
 
 export default app
