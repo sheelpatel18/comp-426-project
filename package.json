@@ -1,7 +1,7 @@
 {
   "name": "426-final-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "WebApp and API that allows for users to easily create accounts and advertise availability for meetings.",
   "main": "./lib/api.js",
   "scripts": {
     "test": "npm run build && jest && cd app/meeting-app && npm test",
@@ -12,9 +12,9 @@
     "build-app": "cd app/meeting-app && npm i && npm run build",
     "build-server": "npm i && npx tsc"
   },
-  "keywords": [],
+  "keywords": ["scheduler", "availability", "meeting", "calendar"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
