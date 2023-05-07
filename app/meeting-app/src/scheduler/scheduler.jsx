@@ -8,77 +8,86 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import LoadingOverlay from '../Tools/LoadingOverlay';
 
 export default function Scheduler(props) {
-  const userRaw = useSelector(state => state.user)
-  const [schedule, setSchedule] = useState(new User(userRaw).availability?.map?.(s => {
+  const userRaw = useSelector(state => state.user) // gets user data from redux store
+  const [schedule, setSchedule] = useState(new User(userRaw).availability?.map?.(s => { // sets schedule to user's existing availability or empty array
     try {
-      return new Date(s)
+      return new Date(s) 
     } catch (e) {
       console.error(e)
-      return null;
+      return null; // if s is not a valid date, return null
     }
-  })?.filter?.(s => s) || []);
-  const [whenAvailable, setWhenAvailable] = useState('')
-  const [open, setOpen] = useState(false)
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false)
-  const dispatch = useDispatch()
+  })?.filter?.(s => s) || []); // filter out null values as a safety measure
+  const [whenAvailable, setWhenAvailable] = useState('') // used to display when available
+  const [open, setOpen] = useState(false) // used for success snackbar
+  const [dialogOpen, setDialogOpen] = useState(false); // used for reset dialog
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false) // used for loading overlay
+  const dispatch = useDispatch() // used to dispatch actions to redux store
 
   const handleChange = (newSchedule) => {
+    // handles schedule change
     setSchedule(newSchedule);
   };
 
   const handleSubmit = async () => {
+    // handles submit button click
     try {
-      setShowLoadingOverlay(true)
-      const user = new User(userRaw)
-      const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => (s?.toUTCString?.() || "") ?? []).filter(s => s) })
+      setShowLoadingOverlay(true) // start loading overlay
+      const user = new User(userRaw) // create new user object from redux store data
+      const updatedUser = await API.patch(`/user/${user.id}`, { availability: schedule.map(s => (s?.toUTCString?.() || "") ?? []).filter(s => s) }) // make api call to update database
+      // the schedule is parsed to match api requirements above in a similar fashion to how the state is first initialized.
+      // the following is completed if the user's schedule is successfully updated in the database:
       dispatch(
-        setUser(updatedUser)
+        setUser(updatedUser) // update redux store with user data
       )
-      setOpen(true)
+      setOpen(true) // show success snackbar
       setTimeout(() => {
-        setOpen(false)
+        setOpen(false) // hide success snackbar after 3 seconds in an async fashion. Meaning the finally statement will still run and NOT wait for this to finish.
       }, 3000);
     } catch (err) {
       console.error(err)
     } finally {
-      setShowLoadingOverlay(false)
+      setShowLoadingOverlay(false) // stop loading overlay
     }
   };
 
   const handleReset = () => {
+    // handles reset button click, resets schedule to empty array
     setSchedule([]);
   };
 
   const handleWhenAvailabe = async () => {
+    // handles find meeting time button click
     try {
-      setShowLoadingOverlay(true)
-      const whenAvailable = await API.get(`/whenAvailable/${userRaw?.id || ''}`) || ""
-      setWhenAvailable(whenAvailable)
+      setShowLoadingOverlay(true) // start loading overlay
+      const whenAvailable = await API.get(`/whenAvailable/${userRaw?.id || ''}`) || "" // make api call to get when available
+      setWhenAvailable(whenAvailable) // set when available
     } catch (err) {
       console.error(err)
-      new Promise(resolve => setTimeout(resolve, 5000))
+      new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 seconds before hiding when available
     } finally {
-      setShowLoadingOverlay(false)
+      setShowLoadingOverlay(false) // stop loading overlay, no matter what happens
     }
     
   };
 
   const handleClose = (event, reason) => {
+    // handles success snackbar close
     if (reason === 'clickaway') {
-      return;
+      return; // if user clicks away, do nothing
     }
 
-    setOpen(false);
+    setOpen(false); // hide success snackbar
   };
 
   const handleDialogClose = () => {
+    // handles reset dialog close
     setDialogOpen(false);
   };
 
   const handleDialogConfirm = () => {
+    // handles reset dialog confirm
     handleReset()
-    setDialogOpen(false)
+    setDialogOpen(false) // hide reset dialog
   }
 
   return (
@@ -87,7 +96,7 @@ export default function Scheduler(props) {
       borderRadius: '5px',
       padding: '1rem'
     }}>
-      <LoadingOverlay open={showLoadingOverlay} />
+      <LoadingOverlay open={showLoadingOverlay} /> {/* show loading overlay if showLoadingOverlay is true, this would cover the entire viewport */}
       <h1 style={{
         marginBottom: '1rem',
         fontSize: '2rem',
@@ -96,7 +105,7 @@ export default function Scheduler(props) {
         textTransform: 'uppercase',
         letterSpacing: '0.2rem'
       }}>Meeting Scheduler</h1>
-      <ScheduleSelector
+      <ScheduleSelector // schedule selector component
         selection={schedule}
         numDays={7}
         minTime={10}
@@ -158,7 +167,6 @@ export default function Scheduler(props) {
         autoHideDuration={3000}
         onClose={handleClose}
         message="Success"
-      // action={action}
       />
       <Dialog
         open={dialogOpen}
@@ -173,10 +181,10 @@ export default function Scheduler(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
+          <Button onClick={handleDialogClose} color="primary"> {/* close dialog */}
             Cancel
           </Button>
-          <Button onClick={handleDialogConfirm} color="secondary" autoFocus>
+          <Button onClick={handleDialogConfirm} color="secondary" autoFocus> {/* reset schedule */}
             Yes
           </Button>
         </DialogActions>

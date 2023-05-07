@@ -13,10 +13,10 @@ const mainSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload; // used whenever user data need to be updated, generally from a server-side action. 
     },
     setAvailabilityFromScheduler: (state, action) => {
-      state.availabilityInScheduler = action.payload;
+      state.availabilityInScheduler = action.payload; // used by scheduler.jsx file
     }
   }
 })

@@ -38,23 +38,21 @@ const StyledCard = styled(Card)`
 `;
 
 const LoginCard = ({ onClose }) => {
-    // const [phoneNumber, setPhoneNumber] = useState('');
-    const phoneNumber = useRef("")
+    // we use refs instead of state because we don't want to re-render the component when the user types.
+    // The text component already "Rerenders" when user types we don't need redundancy. 
+    const phoneNumber = useRef("") 
     const name = useRef('')
     const verificationCode = useRef('')
-    // const [name, setName] = useState('')
-    // const [verificationCode, setVerificationCode] = useState('');
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(0); // 0 = phone, 1 = otp, 2 = name
     const [ready, setReady] = useState(false) // in case we need for some async operation. 
     const [buttonLoading, setButtonLoading] = useState(false) // in case we need for some async operation.
-    const confirmationRef = useRef(null);
-    const userRaw = useSelector(state => state.user)
-    const state = useSelector(state => state)
-    const dispatch = useDispatch()
+    const confirmationRef = useRef(null); // used to store confirmation object from firebase
+    const userRaw = useSelector(state => state.user) // gets user data from redux store
+    const dispatch = useDispatch() // used to dispatch actions to redux store
 
 
     useEffect(() => {
-        const firebaseConfig = {
+        const firebaseConfig = { // firebase client-side config. We use this for phone auth
             apiKey: "AIzaSyAny-oWiYX8Lj9LO4Qtnj-wfInL-We_O1M",
             authDomain: "comp426-383520.firebaseapp.com",
             projectId: "comp426-383520",
@@ -67,51 +65,52 @@ const LoginCard = ({ onClose }) => {
     }, [])
 
     const handleNextClick = async () => {
+        // handles next button click on login card
         try {
-            setButtonLoading(true);
+            setButtonLoading(true); // start button loading
             if (step === 0) { // submit phone
                 const verify = new RecaptchaVerifier('recaptcha-container', {
                     'size': 'invisible'
-                }, getAuth())
-                await API.post("/user", {
+                }, getAuth()) // create recaptcha verifier
+                await API.post("/user", { // create user in database
                     phone: `+1${phoneNumber.current}`
-                }).catch(console.error)
-                const confirmation = await signInWithPhoneNumber(getAuth(), `+1${phoneNumber.current}`, verify)
-                confirmationRef.current = confirmation;
+                })
+                const confirmation = await signInWithPhoneNumber(getAuth(), `+1${phoneNumber.current}`, verify) // if api call is successful, send otp
+                confirmationRef.current = confirmation; // store confirmation object
                 setStep(1);
             } else if (step === 1) { // submit otp
-                const userCred = await confirmationRef.current.confirm(verificationCode.current);
-                const id = userCred.user.uid
-                const userRaw = await API.get(`/user/${id}`)
-                const user = new User(userRaw)
+                const userCred = await confirmationRef.current.confirm(verificationCode.current); // confirm otp
+                const id = userCred.user.uid // get user id
+                const userRaw = await API.get(`/user/${id}`) // get user data from database
+                const user = new User(userRaw) // create user object from database data
                 dispatch(
-                    setUser(user.toJSON())
+                    setUser(user.toJSON()) // update redux store with user data
                 )
                 setStep(2)
             } else if (step === 2) { // submit name
-                const user = new User(userRaw)
-                await API.patch(`/user/${user.id}`, {
+                const user = new User(userRaw) // create user object from redux store data
+                await API.patch(`/user/${user.id}`, { // update user in database
                     name : name.current
-                }).then(updatedUser => {
+                }).then(updatedUser => { // if api call is successful, update redux store with new user data
                     dispatch(
-                        setUser(updatedUser)
+                        setUser(updatedUser) // update redux store with user data
                     )
-                }).catch(console.error)
+                })
                 setStep(-1) // no additional steps
             } else {
-                console.error('invalid step')
+                console.error('invalid step') // should never happen
             }
         } catch (err) {
             console.error(err);
         } finally {
-            setButtonLoading(false);
+            setButtonLoading(false); // stop button loading, no matter what happens
         }
     };
 
     const RenderBox = () => {
-        switch (step) {
+        switch (step) { // based on the step, render the appropriate input box
             case 0:
-                return (
+                return ( // if step is 0, render phone number input box
                     <TextField
                         disabled={buttonLoading}
                         fullWidth
@@ -120,7 +119,7 @@ const LoginCard = ({ onClose }) => {
                     />
                 )
             case 1:
-                return (
+                return ( // if step is 1, render verification code input box
                     <TextField
                         disabled={buttonLoading}
                         fullWidth
@@ -129,7 +128,7 @@ const LoginCard = ({ onClose }) => {
                     />
                 )
             case 2:
-                return (
+                return ( // if step is 2, render name input box
                     <TextField
                         disabled={buttonLoading}
                         fullWidth
@@ -142,30 +141,30 @@ const LoginCard = ({ onClose }) => {
         }
     }
 
-    return (ready && (
+    return (ready && ( // do not render until firebase is ready
         <Overlay onClick={onClose}>
             <StyledCard onClick={(e) => e.stopPropagation()}>
                 <CardContent>
                     <Typography variant="h5" gutterBottom>
                         Login
                     </Typography>
-                    <div id="recaptcha-container"></div>
-                    <RenderBox />
+                    <div id="recaptcha-container"></div> {/* recaptcha container */}
+                    <RenderBox /> {/* render input box based on step */}
                     <Box mt={2}>
-                        <LoadingButton
+                        <LoadingButton // render next button, loads when clicked and stopped according to the flow above
                             fullWidth
                             variant="contained"
                             color="primary"
                             onClick={handleNextClick}
                             loading={buttonLoading}
                         >
-                            {step === 0 ? 'Next' : 'Submit'}
+                            {step === 0 ? 'Next' : 'Submit'} {/* if step is 0, button says next, otherwise it says submit */}
                         </LoadingButton>
                     </Box>
                 </CardContent>
             </StyledCard>
         </Overlay>
-    )) || <Loading />
+    )) || <Loading /> // if firebase is not ready, render loading component
 };
 
 export default LoginCard;
