@@ -15,7 +15,7 @@
   },
   "keywords": ["scheduler", "availability", "meeting", "calendar"],
   "author": "",
-  "license": "MIT",
+  "license": "GNU 3.0",
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
