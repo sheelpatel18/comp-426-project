@@ -20,6 +20,11 @@ export class User {
         this.availability = availability ? availability.map(date => new Date(date)) : []
     }
 
+    /**
+     * Gets user from database by id
+     * @param id id of user to get
+     * @returns User object if it exists, null if not
+     */
     static async get(id: string): Promise<User | null> {
         const userData = await Cloud.Database.get('users', id)
         if (userData) {
@@ -29,10 +34,18 @@ export class User {
         }
     }
 
+    /**
+     * edits user in database given the current user object
+     */
     async edit(): Promise<void> {
         await Cloud.Database.edit('users', this.id, this.toJSON())
     }
 
+    /**
+     * 
+     * @param param0 object with the following properties: id, name, phone, availability (e.g. {id: "", name: "", phone: "", availability: []})
+     * @returns User Object
+     */
     static async create({ id, name, phone, availability}: {id?: string, name?: string, phone: string, availability?: Date[]}): Promise<User> {
         if (await Cloud.Auth.getUserByPhone(phone)) {
             throw new Error("USER_EXISTS")
@@ -49,6 +62,10 @@ export class User {
         }
     }
 
+    /**
+     * Parses user object into JSON-friendly format
+     * @returns JSON representation of user object
+     */
     toJSON() {
         return {
             id: this.id,
