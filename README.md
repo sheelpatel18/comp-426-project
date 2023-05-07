@@ -8,11 +8,11 @@
     <h2>Set Up</h2>
     <hr>
     <h2>Team Roles</h2>
-    <p>Sheel Patel: Back-end lead/Plan manager</p>
-    <p>Vidyuth Jagadeesan: Front-end lead/Database manager</p>
-    <p>Nashith Agarwal: Project manager/Documentatiom manager</p>
-    <p>Azaria Prescod: Documentation manager/Designer</p>
-    <p>Samuel Osei: Release manager/Design lead</p>
+    <p><b>Sheel Patel</b>: Back-end lead/Plan manager</p>
+    <p><b>Vidyuth Jagadeesan</b>: Front-end lead/Database manager</p>
+    <p><b>Nashith Agarwal</b>: Project manager/Documentatiom manager</p>
+    <p><b>Azaria Prescod</b>: Documentation manager/Designer</p>
+    <p><b>Samuel Osei</b>: Release manager/Design lead</p>
     <hr>
     <h2>Future Implementations</h2>
     <h5>Admin Functionality: an admin user that could limit the users that submit their meeting time.</h5>
