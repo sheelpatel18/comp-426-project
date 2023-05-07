@@ -2,9 +2,11 @@ import * as firebaseAdmin from 'firebase-admin'
 import ObjectID from 'bson-objectid'
 import { Cloud } from './cloud'
 
-const generateID = () : string => {
-    return ObjectID().toHexString()
-}
+const generateID = () : string => ObjectID().toHexString() // generate a random BSON object ID
+
+/**
+ * This class represents a user in the database
+ */
 export class User {
     id: string
     name: string
